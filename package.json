@@ -1,0 +1,26 @@
+{
+  "name": "cas-exmailqq",
+  "version": "0.1.0",
+  "description": "A component for support exmailqq integrated with CAS",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/detailyang/cas-exmailqq.git"
+  },
+  "keywords": [
+    "cas",
+    "exmailqq"
+  ],
+  "author": "detailyang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/detailyang/cas-exmailqq/issues"
+  },
+  "homepage": "https://github.com/detailyang/cas-exmailqq#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
