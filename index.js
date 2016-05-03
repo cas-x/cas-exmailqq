@@ -90,6 +90,7 @@ function refreshAccessToken() {
       setTimeout(refreshAccessToken, (expires_in - 60 ) * 1000);
   }).catch((err) => {
     console.log(`refresh access token error ${err}`);
+    process.exit(2);
   });
 }
 
