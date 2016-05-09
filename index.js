@@ -67,6 +67,10 @@ app.post('/cas/callback', function (req, res) {
         console.log(`add exmailqq error ${err}`);
       });
       break;
+    case 'user.sync':
+      console.log('receive user sync event');
+      console.log(data);
+      break;
     default:
       break;
   }
