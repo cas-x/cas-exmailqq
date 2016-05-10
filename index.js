@@ -36,12 +36,14 @@ app.post('/cas/callback', function (req, res) {
     case 'user.update':
       const is_delete = data.value.is_delete;
       if (is_delete) {
-        eq.disableUser(accessToken, user.username, `${user.username}@${config.cas_mail}`)
-        .then((res) => {
-          console.log(res.text);
-        })
-        .catch((err) => {
-          console.log(`disable user error ${err}`);
+        config.cas_mail_alias.split(',').map((mail) => {
+          eq.disableUser(accessToken, user.username, `${user.username}@${mail}`)
+          .then((res) => {
+            console.log(res.text);
+          })
+          .catch((err) => {
+            console.log(`disable user error ${err}`);
+          });
         });
       } else {
         eq.enableUser(accessToken, user.username, `${user.username}@${config.cas_mail}`)
