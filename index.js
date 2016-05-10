@@ -19,8 +19,9 @@ const eq = new Exmailqq();
 const config = require('./config');
 let accessToken = null;
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+// 10mb for receive all user
+app.use(bodyParser.urlencoded({ extended: false, limit: '10mb' }));
+app.use(bodyParser.json({ limit: '10mb' }));
 
 app.post('/cas/callback', function (req, res) {
   const data = req.body;
