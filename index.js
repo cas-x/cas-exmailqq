@@ -62,9 +62,13 @@ app.post('/cas/callback', function (req, res) {
         config.cas_password)
       .then((res) => {
         if (res.status !== 200) {
-          console.log(`add exmailqq ${user.username} ${user.username}@${config.cas_mail} error ${err}`);
+          console.log(`add exmailqq ${user.username} ${user.username}@${config.cas_mail} error status ${res.status}`);
         } else {
-          console.log(`add exmailqq ${user.username} ${user.username}@${config.cas_mail}`);
+          if (res.body.errcode) {
+            console.log(`add exmailqq ${user.username} ${user.username}@${config.cas_mail} error ${res.body}`);
+          } else {
+            console.log(`add exmailqq ${user.username} ${user.username}@${config.cas_mail}`);
+          }
         }
       }).catch((err) => {
         console.log(`add exmailqq error ${err}`);
