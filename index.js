@@ -3,7 +3,7 @@
 * @Date:   2016-04-29T10:43:57+08:00
 * @Email:  detailyang@gmail.com
 * @Last modified by:   detailyang
-* @Last modified time: 2016-04-29T10:45:48+08:00
+* @Last modified time: 2016-05-24T16:06:28+08:00
 * @License: The MIT License (MIT)
 */
 
@@ -11,6 +11,7 @@
 'use strict'
 
 
+const async = require('async');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -75,8 +76,34 @@ app.post('/cas/callback', function (req, res) {
       });
       break;
     case 'user.sync':
-      console.log('receive user sync event');
-      console.log(data);
+      const fns = [];
+      for (const i = 0; i < data.value.length; i ++) {
+        const user = data.value[i];
+        fns.push(((user) => {
+          return () => {
+            if (user.is_delete) {
+              eq.disableUser(accessToken, user.username, `${user.username}@${mail}`)
+              .then((res) => {
+                console.log(res.text);
+              })
+              .catch((err) => {
+                console.log(`disable user error ${err}`);
+              });
+            } else {
+              eq.enableUser(accessToken, user.username, `${user.username}@${config.cas_mail}`)
+              .then((res) => {
+                console.log(res.text);
+              })
+              .catch((err) => {
+                console.log(`enable user error ${err}`);
+              });
+            }
+          };
+        })(user))
+      }
+      async.parallelLimit(fns, 4, () => {
+        console.log("sync user success");
+      });
       break;
     default:
       break;
@@ -104,4 +131,3 @@ function refreshAccessToken() {
     process.exit(2);
   });
 }
-
