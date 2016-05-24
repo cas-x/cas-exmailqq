@@ -3,7 +3,7 @@
 * @Date:   2016-04-29T10:43:57+08:00
 * @Email:  detailyang@gmail.com
 * @Last modified by:   detailyang
-* @Last modified time: 2016-05-24T16:06:28+08:00
+* @Last modified time: 2016-05-24T16:09:45+08:00
 * @License: The MIT License (MIT)
 */
 
@@ -90,19 +90,43 @@ app.post('/cas/callback', function (req, res) {
                 console.log(`disable user error ${err}`);
               });
             } else {
-              eq.enableUser(accessToken, user.username, `${user.username}@${config.cas_mail}`)
-              .then((res) => {
-                console.log(res.text);
+              async.series([
+                () => {
+                  eq.addUser(accessToken,
+                    user.username, `${user.username}@${config.cas_mail}`,
+                    config.cas_password)
+                  .then((res) => {
+                    if (res.status !== 200) {
+                      console.log(`add exmailqq ${user.username} ${user.username}@${config.cas_mail} error status ${res.status}`);
+                    } else {
+                      if (res.body.errcode) {
+                        console.log(`add exmailqq ${user.username} ${user.username}@${config.cas_mail} error ${res.body}`);
+                      } else {
+                        console.log(`add exmailqq ${user.username} ${user.username}@${config.cas_mail}`);
+                      }
+                    }
+                  }).catch((err) => {
+                    console.log(`add exmailqq error ${err}`);
+                  });
+                },
+                () => {
+                  eq.enableUser(accessToken, user.username, `${user.username}@${config.cas_mail}`)
+                  .then((res) => {
+                    console.log(res.text);
+                  })
+                  .catch((err) => {
+                    console.log(`enable user error ${err}`);
+                  });
+                }
+              ], () => {
+                console.log("add user done");
               })
-              .catch((err) => {
-                console.log(`enable user error ${err}`);
-              });
             }
           };
         })(user))
       }
       async.parallelLimit(fns, 4, () => {
-        console.log("sync user success");
+        console.log("sync user done");
       });
       break;
     default:
