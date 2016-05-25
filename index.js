@@ -77,7 +77,7 @@ app.post('/cas/callback', function (req, res) {
       break;
     case 'user.sync':
       const fns = [];
-      for (const i = 0; i < data.value.length; i ++) {
+      for (let i = 0; i < data.value.length; i ++) {
         const user = data.value[i];
         fns.push(((user) => {
           return () => {
@@ -151,7 +151,7 @@ function refreshAccessToken() {
       console.log(`next refresh token after ${expires_in} s`);
       setTimeout(refreshAccessToken, (expires_in - 60 ) * 1000);
   }).catch((err) => {
-    console.log(`refresh access token error ${err}`);
+    console.log('refresh access token error', err);
     process.exit(2);
   });
 }
