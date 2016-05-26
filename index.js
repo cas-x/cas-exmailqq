@@ -80,18 +80,19 @@ app.post('/cas/callback', function (req, res) {
       for (let i = 0; i < data.value.length; i ++) {
         const user = data.value[i];
         fns.push(((user) => {
-          return () => {
+          return (callback) => {
             if (user.is_delete) {
               eq.disableUser(accessToken, user.username, `${user.username}@${mail}`)
               .then((res) => {
-                console.log(res.text);
+                callback(null, res.text);
               })
               .catch((err) => {
-                console.log(`disable user error ${err}`);
+                console.log(`disable user error`, err);
+                callback(null, err);
               });
             } else {
               async.series([
-                () => {
+                (callback) => {
                   eq.addUser(accessToken,
                     user.username, `${user.username}@${config.cas_mail}`,
                     config.cas_password)
@@ -104,18 +105,21 @@ app.post('/cas/callback', function (req, res) {
                       } else {
                         console.log(`add exmailqq ${user.username} ${user.username}@${config.cas_mail}`);
                       }
+                      callback(null);
                     }
                   }).catch((err) => {
-                    console.log(`add exmailqq error ${err}`);
+                    console.log('enable user error', err);
+                    callback(null, err);
                   });
                 },
-                () => {
+                (callback) => {
                   eq.enableUser(accessToken, user.username, `${user.username}@${config.cas_mail}`)
                   .then((res) => {
-                    console.log(res.text);
+                    callback(null, res.text);
                   })
                   .catch((err) => {
-                    console.log(`enable user error ${err}`);
+                    console.log('enable user error', err);
+                    callback(null, err)
                   });
                 }
               ], () => {
