@@ -119,11 +119,11 @@ app.post('/cas/callback', function (req, res) {
                   })
                   .catch((err) => {
                     console.log('enable user error', err);
-                    callback(null, err)
+                    callback();
                   });
                 }
               ], () => {
-                console.log("add user done");
+                callback();
               })
             }
           };
