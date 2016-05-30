@@ -82,7 +82,7 @@ app.post('/cas/callback', function (req, res) {
         fns.push(((user) => {
           return (callback) => {
             if (user.is_delete) {
-              eq.disableUser(accessToken, user.username, `${user.username}@${mail}`)
+              eq.disableUser(accessToken, user.username, `${user.username}@${config.cas_mail}`)
               .then((res) => {
                 callback(null, res.text);
               })
